@@ -1,0 +1,30 @@
+---
+import '../styles/global.css';
+interface Props { title: string; description: string; canonical?: string; }
+const { title, description, canonical = Astro.url.pathname } = Astro.props;
+const canonicalUrl = new URL(canonical, Astro.site);
+const ogImage = new URL('/images/francesco-bracchi.webp', Astro.site);
+---
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#102238" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="canonical" href={canonicalUrl} />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <title>{title}</title>
+</head>
+<body>
+  <a class="skip" href="#contenuto">Vai al contenuto</a>
+  <slot />
+</body>
+</html>

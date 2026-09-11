@@ -1,0 +1,19 @@
+<form class="newsletter" id="newsletter-form" novalidate>
+  <h3>Newsletter</h3><p>Approfondimenti su innovazione, tecnologia e servizi finanziari.</p>
+  <div class="field"><label for="name">Nome <span class="fineprint">(facoltativo)</span></label><input id="name" name="name" type="text" maxlength="80" autocomplete="name" /></div>
+  <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" required maxlength="254" autocomplete="email" inputmode="email" /></div>
+  <div class="hp" aria-hidden="true"><label for="website">Sito web</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off" /></div>
+  <label class="consent" for="consent"><input id="consent" name="consent" type="checkbox" required /><span>Ho letto l'<a href="/privacy-policy">informativa sulla privacy</a> e acconsento al trattamento dei miei dati per la ricezione della newsletter.</span></label>
+  <p class="status" id="form-status" role="status" aria-live="polite"></p>
+  <button class="button primary" id="submit" type="submit" disabled>Iscriviti</button>
+  <p class="fineprint">Riceverai un'email per confermare l'iscrizione. Ogni comunicazione includerà un link di disiscrizione.</p>
+</form>
+<script>
+  const form=document.querySelector<HTMLFormElement>('#newsletter-form')!;const consent=document.querySelector<HTMLInputElement>('#consent')!;const submit=document.querySelector<HTMLButtonElement>('#submit')!;const status=document.querySelector<HTMLElement>('#form-status')!;
+  consent.addEventListener('change',()=>submit.disabled=!consent.checked);
+  form.addEventListener('submit',async(e)=>{e.preventDefault();status.textContent='';if(!form.reportValidity()||!consent.checked)return;submit.disabled=true;submit.textContent='Invio in corso…';const data=Object.fromEntries(new FormData(form));
+    try{const response=await fetch('/api/newsletter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json();if(!response.ok)throw new Error(result.message||'Invio non riuscito');status.textContent='Controlla la posta e conferma l’iscrizione tramite il link ricevuto.';form.reset();}
+    catch(error){status.textContent=error instanceof Error?error.message:'Si è verificato un errore.';}
+    finally{submit.textContent='Iscriviti';submit.disabled=!consent.checked;}
+  });
+</script>
